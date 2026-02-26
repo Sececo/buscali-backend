@@ -21,7 +21,8 @@ bootstrap();
 
 const app = express();
 app.use(express.json());
-const swaggerDocument = YAML.load('../docs/conductores.yaml');
+// ruta de la documentación Swagger apuntada al archivo YAML en su ubicacion despues de compilar a dist/docs
+const swaggerDocument = YAML.load('./docs/conductores.yaml');
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'OK', service: 'conductores-service' }));

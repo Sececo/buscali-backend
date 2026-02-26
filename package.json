@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon --exec ts-node src/app.ts",
     "start": "node dist/app.js",
-    "build": "tsc",
+    "build": "tsc && cp -r docs dist/docs",
     "test": "jest"
   },
   "dependencies": {
