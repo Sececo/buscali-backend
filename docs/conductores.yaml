@@ -34,16 +34,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Conductor'
-  /conductores/{id}:
+  /conductores/{cedula}:
     get:
-      summary: Obtener un conductor por ID
+      summary: Obtener un conductor por cedula
       parameters:
-        - name: id
+        - name: cedula
           in: path
           required: true
-          description: ID del conductor
+          description: cedula del conductor
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         '200':
           description: Conductor encontrado
@@ -56,12 +57,13 @@ paths:
     put:
       summary: Actualizar un conductor
       parameters:
-        - name: id
+        - name: cedula
           in: path
           required: true
-          description: ID del conductor
+          description: cedula del conductor
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -80,12 +82,13 @@ paths:
     delete:
       summary: Eliminar un conductor
       parameters:
-        - name: id
+        - name: cedula
           in: path
           required: true
-          description: ID del conductor
+          description: cedula del conductor
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         '204':
           description: Conductor eliminado
@@ -96,14 +99,26 @@ components:
     Conductor:
       type: object
       properties:
-        id:
-          type: string
+        cedula:
+          type: integer
+          format: int64
         nombre:
           type: string
         email:
           type: string
+          format: email
         telefono:
+          type: integer
+          format: int64
+        password:
           type: string
+        created_at:
+          type: string
+          format: date-time
+
       required:
+        - cedula
         - nombre
         - email
+        - telefono
+        - password

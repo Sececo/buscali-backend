@@ -6,23 +6,17 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 })
 export class ConductorModel extends Model {
   @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
+    type: DataType.BIGINT,
+    autoIncrement: false,
     primaryKey: true,
   })
-  id!: number;
+  cedula!: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   nombre!: string;
-
-  @Column({
-    type: DataType.BIGINT,
-    allowNull: false,
-  })
-  cedula!: bigint;
 
   @Column({
     type: DataType.STRING,

@@ -7,25 +7,25 @@ export class ConductorRepository {
     return conductores.map(c => c.toJSON() as Conductor);
   }
 
-  async findConductorById(id: number): Promise<Conductor | null> {
-    const conductor = await ConductorModel.findByPk(id);
+  async findConductorById(cedula: bigint): Promise<Conductor | null> {
+    const conductor = await ConductorModel.findByPk(cedula);
     return conductor ? (conductor.toJSON() as Conductor) : null;
   }
 
-  async createConductor(data: Omit<Conductor, "id" | "created_at">): Promise<Conductor> {
+  async createConductor(data: Omit<Conductor,  "created_at">): Promise<Conductor> {
     const newConductor = await ConductorModel.create(data);
     return newConductor.toJSON() as Conductor;
   }
 
-  async updateConductor(id: number, data: Partial<Conductor>): Promise<Conductor | null> {
-    const conductor = await ConductorModel.findByPk(id);
+  async updateConductor(cedula: bigint, data: Partial<Conductor>): Promise<Conductor | null> {
+    const conductor = await ConductorModel.findByPk(cedula);
     if (!conductor) return null;
     await conductor.update(data);
     return conductor.toJSON() as Conductor;
   }
 
-  async deleteConductor(id: number): Promise<boolean> {
-    const deleted = await ConductorModel.destroy({ where: { id } });
+  async deleteConductor(cedula: bigint): Promise<boolean> {
+    const deleted = await ConductorModel.destroy({ where: { cedula } });
     return deleted > 0;
   }
 }

@@ -15,17 +15,17 @@ export class ConductorService {
     return conductores.map(c => new ConductorResponseDTO(c));
   }
 
-  async get(id: number): Promise<ConductorResponseDTO | null> {
-    const conductor: Conductor | null = await this.repo.findConductorById(id);
+  async get(cedula: bigint): Promise<ConductorResponseDTO | null> {
+    const conductor: Conductor | null = await this.repo.findConductorById(cedula);
     return conductor ? new ConductorResponseDTO(conductor) : null;
   }
 
   async update(dto: UpdateConductorDTO): Promise<ConductorResponseDTO | null> {
-    const updated = await this.repo.updateConductor(dto.id, dto);
+    const updated = await this.repo.updateConductor(dto.cedula, dto);
     return updated ? new ConductorResponseDTO(updated) : null;
   }
 
-  async delete(id: number): Promise<boolean> {
-    return await this.repo.deleteConductor(id);
+  async delete(cedula: bigint): Promise<boolean> {
+    return await this.repo.deleteConductor(cedula);
   }
 }

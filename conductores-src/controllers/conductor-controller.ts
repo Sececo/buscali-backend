@@ -19,10 +19,10 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Obtener conductor por ID
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:cedula', async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    const conductor = await service.get(id);
+    const cedula = BigInt(req.params.cedula);
+    const conductor = await service.get(cedula);
     if (!conductor) {
       return res.status(404).json({ message: 'Conductor not found' });
     }
@@ -46,10 +46,10 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 // Actualizar un conductor existente
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:cedula', async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    const dto = new UpdateConductorDTO({ id, ...req.body }); 
+    const cedula = BigInt(req.params.cedula);
+    const dto = new UpdateConductorDTO({ cedula, ...req.body }); 
     const update = await service.update(dto);
     if (!update) {
       return res.status(404).json({ message: 'Conductor not found' });
@@ -62,10 +62,10 @@ router.put('/:id', async (req: Request, res: Response) => {
 });
 
 // Eliminar un conductor
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:cedula', async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
-    const success = await service.delete(id);
+    const cedula = BigInt(req.params.cedula);
+    const success = await service.delete(cedula);
     if (!success) {
       return res.status(404).json({ message: 'Conductor not found' });
     }
