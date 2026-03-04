@@ -7,12 +7,12 @@ export class ConductorRepository {
     return conductores.map(c => c.toJSON() as Conductor);
   }
 
-  async findConductorById(cedula: bigint): Promise<Conductor | null> {
+  async findConductorByCedula(cedula: bigint): Promise<Conductor | null> {
     const conductor = await ConductorModel.findByPk(cedula);
     return conductor ? (conductor.toJSON() as Conductor) : null;
   }
 
-  async createConductor(data: Omit<Conductor,  "created_at">): Promise<Conductor> {
+  async createConductor(data: Omit<Conductor,  "fecha_creacion">): Promise<Conductor> {
     const newConductor = await ConductorModel.create(data);
     return newConductor.toJSON() as Conductor;
   }

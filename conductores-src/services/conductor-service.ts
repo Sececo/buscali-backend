@@ -16,7 +16,7 @@ export class ConductorService {
   }
 
   async get(cedula: bigint): Promise<ConductorResponseDTO | null> {
-    const conductor: Conductor | null = await this.repo.findConductorById(cedula);
+    const conductor: Conductor | null = await this.repo.findConductorByCedula(cedula);
     return conductor ? new ConductorResponseDTO(conductor) : null;
   }
 

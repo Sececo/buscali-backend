@@ -3,8 +3,9 @@ export interface Conductor {
   //para el conductor su llave primaria es la cedula
   cedula: bigint;
   nombre: string;
-  email: string;
+  correo_electronico: string;
   telefono: bigint;
-  password: string;
-  created_at: Date;
+  contrasena: string;
+  fecha_creacion: Date;
+  estado: string; // campo opcional para indicar el estado del conductor (activo, inactivo, etc.)
 }

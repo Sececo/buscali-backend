@@ -5,7 +5,7 @@ info:
   description: API para gestionar conductores en el sistema de gestión integral.
   version: 1.0.0
 servers:
-  - url: http://localhost:3000/api
+  - url: http://localhost:3000/api/v1
 paths:
   /conductores:
     get:
@@ -104,21 +104,27 @@ components:
           format: int64
         nombre:
           type: string
-        email:
+        correo_electronico:
           type: string
-          format: email
+          format: correo_electronico
         telefono:
           type: integer
           format: int64
-        password:
+        contrasena:
           type: string
-        created_at:
+        estado:
+          type: string
+          enum:
+            - activo
+            - inactivo
+        fecha_creacion:
           type: string
           format: date-time
 
       required:
         - cedula
         - nombre
-        - email
+        - correo_electronico
         - telefono
-        - password
+        - contrasena
+        - estado

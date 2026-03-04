@@ -1,7 +1,7 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'conductores',
+  tableName: 'conductor',
   timestamps: false, 
 })
 export class ConductorModel extends Model {
@@ -10,7 +10,7 @@ export class ConductorModel extends Model {
     autoIncrement: false,
     primaryKey: true,
   })
-  cedula!: number;
+  cedula!: bigint;
 
   @Column({
     type: DataType.STRING,
@@ -21,8 +21,9 @@ export class ConductorModel extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    unique: true,
   })
-  email!: string;
+  correo_electronico!: string;
 
   @Column({
     type: DataType.BIGINT,
@@ -34,12 +35,20 @@ export class ConductorModel extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  password!: string;
-
+  contrasena!: string;
+  
+  @Column({
+    type: DataType.ENUM('activo', 'inactivo'),
+    allowNull: false,
+    defaultValue: 'activo',
+  })
+  estado!: string;
+  
   @Column({
     type: DataType.DATE,
     allowNull: false,
     defaultValue: DataType.NOW,
   })
-  created_at!: Date;
+  fecha_creacion!: Date;
+
 }
