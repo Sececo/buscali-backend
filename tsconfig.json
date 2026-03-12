@@ -11,6 +11,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["conductores-src/**/*", "conductores-src/app.ts"],
+  "include": ["conductores-src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

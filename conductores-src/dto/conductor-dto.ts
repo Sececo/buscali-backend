@@ -1,51 +1,64 @@
+import { Is } from 'sequelize-typescript';
 import { Conductor } from '../types/conductor'
+import { IsEmail, IsEnum, IsOptional, Matches} from 'class-validator';
 
 // DTO para crear un cliente
 export class CreateConductorDTO {
-  cedula: bigint;
-  nombre: string;
-  correo_electronico: string;
-  telefono: bigint;
-  contrasena: string;
-  estado: string;
+//TODO: No permitir que se envie la fecha_creacion. Se debe generar automáticamente en la base de datos, no debe ser parte del DTO de creación.
 
-  constructor(conductor: Omit<Conductor, 'fecha_creacion'>) {
-    this.cedula = conductor.cedula;
-    this.nombre = conductor.nombre;
-    this.correo_electronico = conductor.correo_electronico;
-    this.telefono = conductor.telefono;
-    this.contrasena = conductor.contrasena;
-    this.estado = conductor.estado;
-  }
-// TODO: construir funcion para contraseña aleatoria automatica
+  @Matches(/^[0-9]{1,20}$/, { message: 'La Cedula debe contener solo Números y un máximo de 20 dígitos' }) // Validación para permitir solo dígitos en la cédula
+  cedula!: string;
 
+  @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, { message: 'Nombre solo puede contener letras y espacios' }) // Validación para permitir solo letras y espacios
+  nombre!: string;
+
+  @IsEmail({},{ message: 'Formato de correo electrónico inválido' }) // Validación para formato de correo electrónico
+  correo_electronico!: string;
+
+  @Matches(/^\+?[0-9]{7,15}$/, { message: 'Telefono debe contener solo Números y entre 7 y 15 dígitos' }) // Validación para permitir solo dígitos en el teléfono
+  telefono!: string;
+
+  @IsOptional() // Permite que el campo sea opcional al crear un conductor
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,50}$/, { message: "La contraseña debe tener entre 8 y 50 caracteres, incluir mayúscula, minúscula, número y símbolo" }) // Validación para contraseñas seguras
+  contrasena?: string;
+// (?) permite enviar o no el estado al crear un conductor, si no se envía se asume que es "Activo" por defecto en la base de datos, pero si se envía debe ser "Activo" o "Inactivo"
+
+  @IsOptional() // Permite que el campo sea opcional al crear un conductor
+  @IsEnum(['Activo', 'Inactivo'], { message: 'Estado debe ser "Activo" o "Inactivo", con la primera letra en mayúscula' })
+  estado?: string;
 }
 
 // DTO para actualizar un conductor
 export class UpdateConductorDTO {
-  cedula!: bigint;
-  nombre?: string;
-  correo_electronico?: string;
-  telefono?: bigint;
-  contrasena?: string;
-  estado?: string;
 
-constructor(conductor: Partial<Omit<Conductor, 'fecha_creacion'> & { cedula: number }>) {
-    this.cedula = conductor.cedula!;
-    if (conductor.nombre !== undefined) this.nombre = conductor.nombre;
-    if (conductor.correo_electronico !== undefined) this.correo_electronico = conductor.correo_electronico;
-    if (conductor.telefono !== undefined) this.telefono = conductor.telefono;
-    if (conductor.contrasena !== undefined) this.contrasena = conductor.contrasena;
-    if (conductor.estado !== undefined) this.estado = conductor.estado;
-  }
+  @IsOptional() // Permite que el campo sea opcional al actualizar un conductor
+  @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, { message: 'Nombre solo puede contener letras y espacios' }) // Validación para permitir solo letras y espacios
+  nombre?: string;
+
+  @IsOptional() // Permite que el campo sea opcional al actualizar un conductor
+  @IsEmail({},{ message: 'Formato de correo electrónico inválido' }) // Validación para formato de correo electrónico
+  correo_electronico?: string;
+
+  @IsOptional() // Permite que el campo sea opcional al actualizar un conductor
+  @Matches(/^\+?[0-9]{7,15}$/, { message: 'Telefono debe contener solo Números y entre 7 y 15 dígitos' }) // Validación para permitir solo dígitos en el teléfono
+  telefono?: string;
+
+  @IsOptional() // Permite que el campo sea opcional al actualizar un conductor
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,50}$/, { message: "La contraseña debe tener entre 8 y 50 caracteres, incluir mayúscula, minúscula, número y símbolo" }) // Validación para contraseñas seguras
+  contrasena?: string;
+  
+  @IsOptional() // Permite que el campo sea opcional al actualizar un conductor
+  @IsEnum(['Activo', 'Inactivo'], { message: 'Estado debe ser "Activo" o "Inactivo"' })
+  estado?: string;
+  
 }
 
 // DTO para respuesta al conductor
 export class ConductorResponseDTO {
-  nombre: string;
+  cedula?: string;
+  nombre?: string;
   correo_electronico?: string;
-  telefono?: bigint;
-  cedula?: bigint;
+  telefono?: string;
   estado?: string;
 
   constructor(conductor: Conductor) {

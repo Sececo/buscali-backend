@@ -1,8 +1,12 @@
 import { Router, Request, Response } from 'express';
 import { ConductorService } from '../services/conductor-service';
 import { CreateConductorDTO, UpdateConductorDTO } from '../dto/conductor-dto';
+import { plainToInstance } from 'class-transformer';
+import { ValidationError as ClassValidatorError } from 'class-validator';
+import { ConflictError, ValidationError, checkDto } from '../shared/error.class';
 
-//TODO: agregar logica de validacion de datos y manejo de errores
+//DONE: agregar logica de validacion de datos y manejo de errores
+// solucionar validacion para telefono, sustituirstring para que no hayan errores de tipo en class-validator
 
 const service = new ConductorService();
 const router = Router();
@@ -13,57 +17,82 @@ router.get('/', async (req: Request, res: Response) => {
     const conductores = await service.list();
     res.status(200).json(conductores);
   } catch (error) {
-    console.error('Error fetching conductores:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    if (error instanceof ConflictError) 
+      { return res.status(409).json({ error: error.message }); } 
+      if (error instanceof ValidationError) 
+      { return res.status(400).json({ error: error.message }); } 
+      console.error("Error creando conductor:", error); 
+      res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
 // Obtener conductor por ID
 router.get('/:cedula', async (req: Request, res: Response) => {
   try {
-    const cedula = BigInt(req.params.cedula);
+    const cedula = req.params.cedula;
     const conductor = await service.get(cedula);
     res.status(200).json(conductor);
   } catch (error) {
+    if (error instanceof ValidationError) 
+      { return res.status(400).json({ error: error.message }); } 
     console.error('Error fetching conductor:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Crear un nuevo conductor
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const dto = new CreateConductorDTO(req.body); // Valida y transforma la data
+    // transforma y valida en un solo paso utilizando el helper
+    const dto: CreateConductorDTO = plainToInstance(CreateConductorDTO, req.body as Record<string, unknown>);
+    await checkDto(dto);
+
     const newConductor = await service.create(dto);
     res.status(201).json(newConductor);
   } catch (error) {
-    console.error('Error creating conductor:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    if (error instanceof ConflictError) 
+    { return res.status(409).json({ error: error.message }); } 
+    if (error instanceof ValidationError) 
+    { return res.status(400).json({ error: error.messages }); } 
+    console.error("Error creando conductor:", error); 
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
 // Actualizar un conductor existente
 router.put('/:cedula', async (req: Request, res: Response) => {
   try {
-    const cedula = BigInt(req.params.cedula);
-    const dto = new UpdateConductorDTO({ cedula, ...req.body }); 
-    const update = await service.update(dto);
+    // transforma  req.body(JSON) a UpdateConductorDTO y valida los datos usando class-validator
+    const cedula = req.params.cedula;
+    const datos = {
+      ...req.body
+    };
+    const dto = plainToInstance(UpdateConductorDTO, datos as Record<string, unknown>);
+    await checkDto(dto);
+
+    const update = await service.update(cedula, dto);
     res.status(200).json(update);
   } catch (error) {
-    console.error('Error updating conductor:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    if (error instanceof ConflictError) 
+      { return res.status(409).json({ error: error.message }); } 
+    if (error instanceof ValidationError) 
+      { return res.status(400).json({ error: error.messages }); }
+    console.error('Error actualizando conductor:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
 // Eliminar un conductor
 router.delete('/:cedula', async (req: Request, res: Response) => {
   try {
-    const cedula = BigInt(req.params.cedula);
+    const cedula = req.params.cedula;
     const success = await service.delete(cedula);
-    res.status(204).send();
+    res.status(204).json({ success: "Conductor eliminado exitosamente" });
   } catch (error) {
-    console.error('Error deleting conductor:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    if (error instanceof ValidationError) 
+      { return res.status(400).json({ error: error.message }); } 
+    console.error('Error eliminando conductor:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 

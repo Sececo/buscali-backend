@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import clienteController from './controllers/conductor-controller'
+import conductorController from './controllers/conductor-controller'
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { sequelize } from './config/database';
@@ -27,7 +27,7 @@ const swaggerDocument = YAML.load('./docs/conductores.yaml');
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'OK', service: 'conductores-service' }));
 
-app.use('/api/v1/conductores', clienteController);
+app.use('/api/v1/conductores', conductorController);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;

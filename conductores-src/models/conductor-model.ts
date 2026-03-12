@@ -6,11 +6,13 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 })
 export class ConductorModel extends Model {
   @Column({
-    type: DataType.BIGINT,
+    type: DataType.STRING,
     autoIncrement: false,
     primaryKey: true,
+    unique: true,
+    allowNull: false
   })
-  cedula!: bigint;
+  cedula!:string;
 
   @Column({
     type: DataType.STRING,
@@ -26,23 +28,25 @@ export class ConductorModel extends Model {
   correo_electronico!: string;
 
   @Column({
-    type: DataType.BIGINT,
+    type: DataType.STRING,
     allowNull: false,
+    unique: true
   })
-  telefono!: bigint;
+  telefono!:string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    defaultValue: 'Conductor@123' // Contraseña por defecto para nuevos conductores
   })
-  contrasena!: string;
+  contrasena?: string;
   
   @Column({
-    type: DataType.ENUM('activo', 'inactivo'),
+    type: DataType.ENUM('Activo', 'Inactivo'),
     allowNull: false,
-    defaultValue: 'activo',
+    defaultValue: 'Activo',
   })
-  estado!: string;
+  estado?: string;
   
   @Column({
     type: DataType.DATE,
