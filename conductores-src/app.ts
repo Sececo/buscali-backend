@@ -28,7 +28,7 @@ const swaggerDocument = YAML.load('./docs/conductores.yaml');
 app.get('/health', (_req, res) => res.json({ status: 'OK', service: 'conductores-service' }));
 
 app.use('/api/v1/conductores', conductorController);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.listen(PORT, () => {
@@ -37,7 +37,7 @@ app.listen(PORT, () => {
   console.log(`    GET    /api/v1/conductores`);
   console.log(`    POST   /api/v1/conductores`);
   console.log(`    GET    /api/v1/conductores/:id`);
-  console.log(`  Swagger docs: http://localhost:${PORT}/api-docs`);
+  console.log(`  Swagger docs: http://localhost:${PORT}/api/v1/docs`);
 
 });
 
