@@ -10,15 +10,18 @@ export class ConductorService {
   async create(dto: CreateConductorDTO): Promise<ConductorResponseDTO> {
     //TODO: en create y update, unir los errores cuando son mas de uno en una sola salida para el cliente, en vez de lanzar un error por cada validacion fallida, se pueden acumular los errores y lanzarlos juntos al final del proceso de validacion. Esto mejora la experiencia del usuario al mostrar todos los problemas de una vez en lugar de tener que corregir uno por uno.
      //valida que no exista un conductor con la misma cedula
+    const errors: string[] = [];
+
     const existing_cedula = await this.repo.findConductorByCedula(dto.cedula);
-    if (existing_cedula) { throw new ConflictError("Conductor con esta cedula ya existe"); }
+    if (existing_cedula) { errors.push("Conductor con esta cedula ya existe"); }
     //valida que no exista un conductor con el mismo correo_electronico
     const existing_correo_electronico = await this.repo.findConductorByCorreoElectronico(dto.correo_electronico);
-    if (existing_correo_electronico) { throw new ConflictError("Conductor con este correo electronico ya existe"); }
+    if (existing_correo_electronico) { errors.push("Conductor con este correo electronico ya existe"); }
     //valida que no exista un conductor con el mismo telefono
     const existing_telefono = await this.repo.findConductorByTelefono(dto.telefono);
-    if (existing_telefono) { throw new ConflictError("Conductor con este telefono ya existe"); }
-
+    if (existing_telefono) { errors.push("Conductor con este telefono ya existe"); }
+    if (errors.length > 0) { throw new ConflictError(errors); }
+    
     //hashea la contraseña antes de guardarla en la base de datos
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(dto.contrasena || '', saltRounds);
@@ -46,12 +49,14 @@ export class ConductorService {
   }
 
   async update(cedula: string, dto: UpdateConductorDTO): Promise<ConductorResponseDTO | null> {
+    const errors: string[] = [];
     //valida que no exista un conductor con el mismo correo_electronico
     const existing_correo_electronico = await this.repo.findConductorByCorreoElectronico(dto.correo_electronico || '');
-    if (existing_correo_electronico) { throw new ConflictError("Conductor con este correo electronico ya existe"); }
+    if (existing_correo_electronico) { errors.push("Conductor con este correo electronico ya existe"); }
     //valida que no exista un conductor con el mismo telefono
     const existing_telefono = await this.repo.findConductorByTelefono(dto.telefono || '');
-    if (existing_telefono) { throw new ConflictError("Conductor con este telefono ya existe"); }
+    if (existing_telefono) { errors.push("Conductor con este telefono ya existe"); }
+    if (errors.length > 0) { throw new ConflictError(errors); }
 
     //actualiza en la db y devuelve el conductor
     const conductor: Conductor | null = await this.repo.findConductorByCedula(cedula);

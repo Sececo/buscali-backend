@@ -13,9 +13,11 @@ export class ValidationError extends Error {
 
 
 export class ConflictError extends Error {
-  constructor(message: string) {
-    super(message);
+  public readonly messages: string[];
+  constructor(messages: string[] | string) {
+    super(Array.isArray(messages) ? messages.join('; ') : messages);
     this.name = 'ConflictError';
+    this.messages = Array.isArray(messages) ? messages : [messages];
   }
 }
 

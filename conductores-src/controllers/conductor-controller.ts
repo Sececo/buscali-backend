@@ -18,9 +18,9 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(200).json(conductores);
   } catch (error) {
     if (error instanceof ConflictError) 
-      { return res.status(409).json({ error: error.message }); } 
+      { return res.status(409).json({ error: error.messages }); } 
       if (error instanceof ValidationError) 
-      { return res.status(400).json({ error: error.message }); } 
+      { return res.status(400).json({ error: error.messages }); } 
       console.error("Error creando conductor:", error); 
       res.status(500).json({ error: "Error interno del servidor" });
   }
@@ -34,7 +34,7 @@ router.get('/:cedula', async (req: Request, res: Response) => {
     res.status(200).json(conductor);
   } catch (error) {
     if (error instanceof ValidationError) 
-      { return res.status(400).json({ error: error.message }); } 
+      { return res.status(400).json({ error: error.messages }); } 
     console.error('Error fetching conductor:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -51,7 +51,7 @@ router.post('/', async (req: Request, res: Response) => {
     res.status(201).json(newConductor);
   } catch (error) {
     if (error instanceof ConflictError) 
-    { return res.status(409).json({ error: error.message }); } 
+    { return res.status(409).json({ error: error.messages }); } 
     if (error instanceof ValidationError) 
     { return res.status(400).json({ error: error.messages }); } 
     console.error("Error creando conductor:", error); 
@@ -74,7 +74,7 @@ router.put('/:cedula', async (req: Request, res: Response) => {
     res.status(200).json(update);
   } catch (error) {
     if (error instanceof ConflictError) 
-      { return res.status(409).json({ error: error.message }); } 
+      { return res.status(409).json({ error: error.messages }); } 
     if (error instanceof ValidationError) 
       { return res.status(400).json({ error: error.messages }); }
     console.error('Error actualizando conductor:', error);
@@ -90,7 +90,7 @@ router.delete('/:cedula', async (req: Request, res: Response) => {
     res.status(204).json({ success: "Conductor eliminado exitosamente" });
   } catch (error) {
     if (error instanceof ValidationError) 
-      { return res.status(400).json({ error: error.message }); } 
+      { return res.status(400).json({ error: error.messages }); } 
     console.error('Error eliminando conductor:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
