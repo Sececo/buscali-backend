@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import { ConductorService } from '../services/conductor-service';
 import { CreateConductorDTO, UpdateConductorDTO } from '../dto/conductor-dto';
 import { plainToInstance } from 'class-transformer';
-import { ValidationError as ClassValidatorError } from 'class-validator';
 import { ConflictError, ValidationError, checkDto } from '../shared/error.class';
 
 //DONE: agregar logica de validacion de datos y manejo de errores
