@@ -82,6 +82,27 @@ export class UpdateConductorDTO {
   }) // Validación para permitir solo dígitos en el teléfono
   telefono?: string;
 
+  //eliminar despues
+  @IsOptional() // Permite que el campo sea opcional al crear un conductor
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,50}$/,
+    {
+      message:
+        'La contraseña debe tener entre 8 y 50 caracteres, incluir mayúscula, minúscula, número y símbolo',
+    },
+  ) // Validación para contraseñas seguras
+  @IsStrongPassword(
+    {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    { message: 'La contraseña no cumple con los requisitos de seguridad' },
+  )
+  contrasena?: string;
+
   @IsOptional() // Permite que el campo sea opcional al actualizar un conductor
   @IsEnum(['Activo', 'Inactivo'], {
     message: 'Estado debe ser "Activo" o "Inactivo"',
